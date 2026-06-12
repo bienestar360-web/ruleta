@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Ruleta de Descuentos!</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fuente amigable y moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <h1>🎉 ¡Gira y Gana! 🎉</h1>
+            <p>Todos ganan un descuento. Ingresa tu número para participar.</p>
+        </header>
+
+        <main>
+            <div id="form-container" class="card">
+                <p>Ingresa tu WhatsApp para girar la ruleta:</p>
+                <div class="input-group">
+                    <input type="tel" id="whatsapp-input" placeholder="Ej. 5512345678 o +525512345678" maxlength="13">
+                    <button id="start-btn" disabled>Girar Ruleta 🎰</button>
+                </div>
+                <small id="error-message" class="error hidden">Formato inválido. Usa 10 dígitos o +52 seguido de 10
+                    dígitos.</small>
+            </div>
+
+            <div id="roulette-container" class="roulette-wrapper hidden">
+                <div class="pointer">▼</div>
+                <div class="roulette" id="roulette">
+                    <!-- Los sectores se generan con CSS -->
+                    <div class="sector-labels">
+                        <div class="label" style="--i:0;"><span>10%</span></div>
+                        <div class="label" style="--i:1;"><span>15%</span></div>
+                        <div class="label" style="--i:2;"><span>20%</span></div>
+                        <div class="label" style="--i:3;"><span>25%</span></div>
+                        <div class="label" style="--i:4;"><span>30%</span></div>
+                        <div class="label" style="--i:5;"><span>35%</span></div>
+                        <div class="label" style="--i:6;"><span>40%</span></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Modal de Premio -->
+        <div id="prize-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>🎉 ¡Felicidades! 🎉</h2>
+                <p>Has ganado un <strong id="prize-text"></strong> de descuento.</p>
+                <p>Te contactaremos por WhatsApp para aplicarlo. 📲</p>
+                <button id="whatsapp-share-btn" class="whatsapp-btn">Reclamar por WhatsApp 💬</button>
+            </div>
+        </div>
+        <!-- Panel de Control (Solo para el dueño) -->
+        <section class="admin-section">
+            <h3>📊 Historial de Premios (Privado)</h3>
+            <p class="admin-hint">Esta sección es para tu control personal. Los clientes no necesitan verla.</p>
+            <div class="table-container">
+                <table id="leads-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha/Hora</th>
+                            <th>WhatsApp</th>
+                            <th>Premio</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leads-body">
+                        <!-- Datos cargados por JS -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="clear-leads-btn" class="clear-btn">Limpiar Historial</button>
+        </section>
+
+        <script src="script.js"></script>
+</body>
+
+</html>

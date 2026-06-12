@@ -1,0 +1,339 @@
+:root {
+    --primary: #FF0066;
+    --secondary: #FF9900;
+    --bg-gradient: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+    --text-main: #333;
+    --white: #ffffff;
+
+    /* Variables de la ruleta */
+    --sector-angle: 51.42857deg;
+    /* 360 / 7 */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--text-main);
+}
+
+h1,
+h2 {
+    font-family: 'Fredoka One', cursive;
+    color: var(--white);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+p {
+    font-size: 1.1rem;
+    color: var(--white);
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.app-container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+header {
+    margin-bottom: 25px;
+}
+
+.card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.card p {
+    color: var(--text-main);
+    text-shadow: none;
+    margin-bottom: 15px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+input[type="tel"] {
+    padding: 12px 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+input[type="tel"]:focus {
+    border-color: var(--primary);
+}
+
+button {
+    background: linear-gradient(45deg, var(--primary), var(--secondary));
+    color: var(--white);
+    border: none;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-family: 'Fredoka One', cursive;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 15px rgba(255, 0, 102, 0.3);
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 102, 0.4);
+}
+
+button:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.error {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    display: block;
+    font-weight: bold;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Ruleta CSS */
+.roulette-wrapper {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    margin: 0 auto;
+    margin-top: 30px;
+}
+
+.pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 40px;
+    color: #333;
+    z-index: 10;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.roulette {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    /* 7 sectores iguales usando conic-gradient */
+    background: conic-gradient(#FF0066 0deg 51.42deg,
+            #FF9900 51.42deg 102.85deg,
+            #FFCC00 102.85deg 154.28deg,
+            #FF3366 154.28deg 205.71deg,
+            #FF6600 205.71deg 257.14deg,
+            #FFD700 257.14deg 308.57deg,
+            #FF1493 308.57deg 360deg);
+    transition: transform 4s cubic-bezier(0.25, 0.1, 0.15, 1);
+}
+
+.sector-labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(calc(var(--sector-angle) * var(--i)));
+}
+
+.label span {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%) rotate(calc(var(--sector-angle) / 2));
+    transform-origin: 0 135px;
+    /* Mitad de la altura (300/2 - borde) */
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    text-align: center;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-content h2 {
+    color: var(--primary);
+    text-shadow: none;
+}
+
+.modal-content p {
+    color: var(--text-main);
+    text-shadow: none;
+    margin: 15px 0;
+}
+
+.modal-content strong {
+    font-size: 1.5rem;
+    color: var(--secondary);
+}
+
+.whatsapp-btn {
+    background: #25D366;
+    /* Color oficial WhatsApp */
+    width: 100%;
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-btn:hover {
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Admin Section */
+.admin-section {
+    margin-top: 50px;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 20px;
+    border-radius: 15px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 50px;
+}
+
+.admin-section h3 {
+    color: #444;
+    font-family: 'Fredoka One', cursive;
+    margin-bottom: 5px;
+}
+
+.admin-hint {
+    color: #666 !important;
+    font-size: 0.8rem !important;
+    font-weight: normal !important;
+    text-shadow: none !important;
+    margin-bottom: 15px;
+}
+
+.table-container {
+    background: white;
+    border-radius: 10px;
+    overflow-x: auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+th {
+    background: #f8f8f8;
+    color: #333;
+}
+
+.clear-btn {
+    margin-top: 15px;
+    background: #e74c3c;
+    font-size: 0.9rem;
+    padding: 8px 15px;
+    box-shadow: none;
+}
+
+.clear-btn:hover {
+    background: #c0392b;
+}
+
+@media (min-width: 600px) {
+    .roulette-wrapper {
+        width: 350px;
+        height: 350px;
+    }
+
+    .label span {
+        top: 20px;
+        transform-origin: 0 155px;
+        font-size: 1.4rem;
+    }
+}
