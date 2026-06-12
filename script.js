@@ -67,27 +67,29 @@ document.addEventListener('DOMContentLoaded', () => {
         spinRoulette();
     });
 
-    function spinRoulette() {
-        // Sonido opcional (comentado por defecto para no invadir, se puede habilitar)
-        // const audio = new Audio('https://www.soundjay.com/misc/sounds/spinning-wheel-1.mp3');
-        // audio.play().catch(e => console.log('Autoplay audio blocked'));
+    function getRandomPrizeIndex() {
+        // Probabilidades equilibradas (total 100)
+        // Premios: 10%, 15%, 20%, 25%, 30%, 35%, 40%
+        // Pesos:   40, 25, 15, 8, 5, 5, 2
+        const weights = [40, 25, 15, 8, 5, 5, 2];
+        const random = Math.floor(Math.random() * 100);
 
-        // Elegir ganador equitativamente
-        const winningIndex = Math.floor(Math.random() * SECTORS);
+        let cumulative = 0;
+        for (let i = 0; i < weights.length; i++) {
+            cumulative += weights[i];
+            if (random < cumulative) {
+                return i;
+            }
+        }
+        return 0; // Fallback
+    }
+
+    function spinRoulette() {
+        const winningIndex = getRandomPrizeIndex();
         selectedPrize = prizes[winningIndex];
 
         // Calcular rotación
-        // Vueltas extra para que se vea emocionante (ej. 4 a 6 vueltas completas)
         const extraSpins = Math.floor(Math.random() * 3) + 4;
-
-        // El centro del sector ganador:
-        // Como CSS conic gradient empieza arriba y va horario...
-        // El sector i está entre i*DEG_PER_SECTOR y (i+1)*DEG_PER_SECTOR
-        // El centro es i*DEG_PER_SECTOR + DEG_PER_SECTOR/2
-        // Para que la "flecha" (que está arriba en 0deg) apunte a este sector,
-        // necesitamos rotar la ruleta de forma que ese centro quede arriba.
-        // Rotación objetivo_local = 360 - (i * DEG_PER_SECTOR + DEG_PER_SECTOR/2)
-
         const sectorCenter = (winningIndex * DEG_PER_SECTOR) + (DEG_PER_SECTOR / 2);
         const rotationTarget = 360 - sectorCenter;
 
@@ -95,14 +97,13 @@ document.addEventListener('DOMContentLoaded', () => {
         currentRotation = totalRotation;
 
         // Animar
-        // Tiempo aleatorio entre 3 y 5 segundos
         const spinDuration = Math.random() * 2000 + 3000;
         roulette.style.transition = `transform ${spinDuration}ms cubic-bezier(0.25, 0.1, 0.15, 1)`;
         roulette.style.transform = `rotate(${currentRotation}deg)`;
 
         setTimeout(() => {
             handleWin();
-        }, spinDuration + 500); // 500ms extra para asimilar donde cayó
+        }, spinDuration + 500);
     }
 
     function handleWin() {
