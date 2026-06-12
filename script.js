@@ -148,6 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
         renderLeads();
     }
 
+    function maskWhatsApp(number) {
+        if (!number) return "";
+        const visibleDigits = number.slice(-4);
+        const maskedPart = "*".repeat(Math.max(0, number.length - 4));
+        return maskedPart + visibleDigits;
+    }
+
     function renderLeads() {
         const leadsBody = document.getElementById('leads-body');
         const leads = JSON.parse(localStorage.getItem('ruleta_leads') || '[]');
@@ -155,11 +162,23 @@ document.addEventListener('DOMContentLoaded', () => {
         leadsBody.innerHTML = leads.map(lead => `
             <tr>
                 <td>${lead.date}</td>
-                <td>${lead.whatsapp}</td>
+                <td class="toggle-phone" data-full="${lead.whatsapp}" data-masked="${maskWhatsApp(lead.whatsapp)}">
+                    ${maskWhatsApp(lead.whatsapp)}
+                </td>
                 <td>${lead.prize}</td>
             </tr>
         `).join('');
     }
+
+    // Event listener para revelar números al hacer clic
+    document.getElementById('leads-body').addEventListener('click', (e) => {
+        const target = e.target.closest('.toggle-phone');
+        if (target) {
+            const isMasked = target.textContent.trim().includes('*');
+            target.textContent = isMasked ? target.dataset.full : target.dataset.masked;
+            target.classList.toggle('revealed', !isMasked);
+        }
+    });
 
     // Botón para limpiar historial
     document.getElementById('clear-leads-btn').addEventListener('click', () => {
