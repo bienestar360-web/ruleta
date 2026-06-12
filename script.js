@@ -122,9 +122,8 @@ document.addEventListener('DOMContentLoaded', () => {
     whatsappShareBtn.addEventListener('click', () => {
         const message = `¡Gané un ${selectedPrize} de descuento en tu ruleta! ¿Cómo lo reclamo?`;
 
-        // Número de contacto del negocio (Cambiar por el tuyo)
-        // Ejemplo: "525511223344"
-        const businessNumber = "520000000000";
+        // Número de contacto del negocio actualizado
+        const businessNumber = "529618783463";
 
         const url = `https://wa.me/${businessNumber}?text=${encodeURIComponent(message)}`;
         window.open(url, '_blank');
